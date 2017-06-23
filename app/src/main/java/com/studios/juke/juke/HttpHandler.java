@@ -25,6 +25,7 @@ public class HttpHandler {
         try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("Authorization", "Bearer BQDNm9H_N49xXPzRLZM93S6M6H8kPDHgY2g0rSmufQXeCgIgI-mJJxXHXe65mPGWjasrmXkd4qd0FNJ0tWzzbBH9pBC0K8Y4lyMvYsf2493_M9uy0XKZaQtRNc8j9HsSIhU-36NmdoX3dTZ0ua8");
             conn.setRequestMethod("GET");
             //conn.connect();
             // read the response
