@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -26,16 +27,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
+import static android.R.attr.data;
+import static android.R.attr.type;
+import static android.R.attr.value;
 import static android.content.ContentValues.TAG;
+import static com.studios.juke.juke.SongListActivity.newIntent;
 
-public class MainActivity extends Activity implements
-        SpotifyPlayer.NotificationCallback, ConnectionStateCallback
-{
-    // UI elements
-    private Button pauseButton;
-    private Button nextButton;
+public class MainActivity extends Activity implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+
+    private EditText mEditSong;
+    private Button mSearchButton;
 
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "256fa987714a455687888ed1f07c3630";
@@ -45,20 +48,29 @@ public class MainActivity extends Activity implements
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
 
-    private Player mPlayer;
+    //dont leave this static
+    public static Player mPlayer;
+    private String mAccessToken;
+    private ArrayList<Song> mSongs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pauseButton = (Button) findViewById(R.id.main_button_pause);
-        nextButton = (Button) findViewById(R.id.main_button_next);
-        pauseButton.setTag(1);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        mEditSong = (EditText) findViewById(R.id.edit_song);
+
+        mSearchButton = (Button) findViewById(R.id.search_button);
+
+       // pauseButton.setTag(1);
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int status = (Integer) v.getTag();
+                String searched_song = mEditSong.getText().toString();
+                new GetSpotifyTracks(searched_song).execute();
+
+
+                /*final int status = (Integer) v.getTag();
                 if (status == 1) {
                     mPlayer.pause(null);
                     pauseButton.setText("Play");
@@ -67,7 +79,7 @@ public class MainActivity extends Activity implements
                     mPlayer.resume(null);
                     pauseButton.setText("Pause");
                     v.setTag(1);
-                }
+                }*/
             }
         });
 
@@ -89,7 +101,9 @@ public class MainActivity extends Activity implements
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
-                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
+                mAccessToken = response.getAccessToken();
+                Log.i("Access Token: ", mAccessToken);
+                Config playerConfig = new Config(this, mAccessToken, CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
@@ -137,11 +151,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
-
-        //play a song!
-        //mPlayer.playUri(null, "spotify:track:15vzANxN8G9wWfwAJLLMCg", 0, 0);
-        //get URL?
-        new GetSpotifyTrack().execute();
+       // new GetSpotifyTrack().execute();
     }
 
     @Override
@@ -164,10 +174,15 @@ public class MainActivity extends Activity implements
         Log.d("MainActivity", "Received connection message: " + message);
     }
 
+    private class GetSpotifyTracks extends AsyncTask<Void, Song, Void> {
+
+        String mSearchedSong;
 
 
+        GetSpotifyTracks(String searched_song){
+            mSearchedSong = searched_song;
+        }
 
-    private class GetSpotifyTrack extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -178,8 +193,8 @@ public class MainActivity extends Activity implements
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
-            String url = "https://api.spotify.com/v1/search?q=Weekend&type=track";
-            String jsonStr = sh.makeServiceCall(url);
+            String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
+            String jsonStr = sh.makeServiceCall(url, mAccessToken);
 
             Log.e(TAG, "Response from url: " + jsonStr);
             if (jsonStr != null) {
@@ -189,10 +204,20 @@ public class MainActivity extends Activity implements
                     // Getting JSON Array node
                     JSONObject tracks = root.getJSONObject("tracks");
                     JSONArray items = tracks.getJSONArray("items");
-                    JSONObject weekend = items.getJSONObject(3);
-                    String uri = weekend.getString("uri");
 
-                    mPlayer.playUri(null, uri, 0, 0);
+                    for(int i = 0; i < items.length(); ++i) {
+                        JSONObject track = items.getJSONObject(i);
+                        String song_name = track.getString("name");
+                        JSONArray artists = track.getJSONArray("artists");
+                        JSONObject main_artist = artists.getJSONObject(0);
+                        String artist = main_artist.getString("name");
+                        String uri = track.getString("uri");
+
+                        Song song = new Song(song_name, artist, uri);
+
+                        publishProgress(song);
+                    }
+                    //mPlayer.playUri(null, uri, 0, 0);
 
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -223,12 +248,18 @@ public class MainActivity extends Activity implements
         }
 
         @Override
+        protected void onProgressUpdate(Song... songs) {
+            super.onProgressUpdate(songs);
+            mSongs.add(songs[0]);
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+
+            //After all songs are queried.. THEN start intent!
+            Intent intent = SongListActivity.newIntent(MainActivity.this, mSongs);
+            startActivity(intent);
         }
     }
-
-
-
-
 }

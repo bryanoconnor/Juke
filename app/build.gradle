@@ -40,5 +40,7 @@ dependencies {
     // This library handles music playback
     compile 'com.spotify.sdk:spotify-player:24-noconnect-2.20b@aar'
 
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+
     testCompile 'junit:junit:4.12'
 }

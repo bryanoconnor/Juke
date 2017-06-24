@@ -23,6 +23,8 @@
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <!-- Needed to start Fragment activity from Activity intent -->
+        <activity android:name="com.studios.juke.juke.SongListActivity"></activity>
     </application>
 
 </manifest>
