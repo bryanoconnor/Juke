@@ -1,8 +1,7 @@
 package com.studios.juke.juke;
 
 import android.util.Log;
-import java.io.IOException;
-import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class HttpHandler {
+public final class HttpHandler {
 
     private static final String TAG = com.studios.juke.juke.HttpHandler.class.getSimpleName();
 
