@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -29,16 +32,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static android.R.attr.data;
-import static android.R.attr.type;
-import static android.R.attr.value;
 import static android.content.ContentValues.TAG;
-import static com.studios.juke.juke.SongListActivity.newIntent;
 
-public class MainActivity extends Activity implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+public class MainActivity extends AppCompatActivity implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
 
     private EditText mEditSong;
     private Button mSearchButton;
+    private Toolbar mToolbar;
 
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "256fa987714a455687888ed1f07c3630";
@@ -58,8 +58,10 @@ public class MainActivity extends Activity implements SpotifyPlayer.Notification
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mEditSong = (EditText) findViewById(R.id.edit_song);
+        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolbar);
 
+        mEditSong = (EditText) findViewById(R.id.edit_song);
         mSearchButton = (Button) findViewById(R.id.search_button);
 
        // pauseButton.setTag(1);
@@ -91,6 +93,34 @@ public class MainActivity extends Activity implements SpotifyPlayer.Notification
 
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tool_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+
+            case R.id.action_home:
+                return true;
+
+            case R.id.action_search:
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     @Override
@@ -151,7 +181,6 @@ public class MainActivity extends Activity implements SpotifyPlayer.Notification
     @Override
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
-       // new GetSpotifyTrack().execute();
     }
 
     @Override
@@ -217,7 +246,6 @@ public class MainActivity extends Activity implements SpotifyPlayer.Notification
 
                         publishProgress(song);
                     }
-                    //mPlayer.playUri(null, uri, 0, 0);
 
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
