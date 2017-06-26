@@ -41,6 +41,7 @@ public class AuthUiActivity extends AppCompatActivity {
                                         new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
                         )
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .setLogo(R.mipmap.ic_launcher)
                         .build(),
         RC_SIGN_IN);
     }
