@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Juke</string>
+    <string name="facebook_application_id" translatable="false">1688540157852957</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1688540157852957</string>
 </resources>
