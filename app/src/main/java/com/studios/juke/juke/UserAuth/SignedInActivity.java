@@ -1,4 +1,4 @@
-package com.studios.juke.juke;
+package com.studios.juke.juke.UserAuth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.studios.juke.juke.R;
 
 public class SignedInActivity extends AppCompatActivity {
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";

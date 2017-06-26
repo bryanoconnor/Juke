@@ -15,7 +15,6 @@ import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.studios.juke.juke.BuildConfig;
 import com.studios.juke.juke.R;
-import com.studios.juke.juke.SignedInActivity;
 
 import java.util.Arrays;
 
