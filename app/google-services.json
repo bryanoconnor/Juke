@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "960172503327",
+    "firebase_url": "https://juke-16ede.firebaseio.com",
+    "project_id": "juke-16ede",
+    "storage_bucket": "juke-16ede.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960172503327:android:ea27936b3a08e465",
+        "android_client_info": {
+          "package_name": "com.studios.juke.juke"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960172503327-5to8m3eaosspoco5i2522m5vf7scu787.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.studios.juke.juke",
+            "certificate_hash": "7bafd9e18aa3b98528cb4b4ebf72baef76920c69"
+          }
+        },
+        {
+          "client_id": "960172503327-350fvpj996085ih11964hnf3bc1r8vm4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgReyaCxwawWaux9D-xcAXrjp6RyVwFzc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960172503327-350fvpj996085ih11964hnf3bc1r8vm4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
