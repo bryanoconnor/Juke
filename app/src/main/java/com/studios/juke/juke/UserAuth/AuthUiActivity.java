@@ -1,4 +1,4 @@
-package com.studios.juke.juke;
+package com.studios.juke.juke.UserAuth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.studios.juke.juke.BuildConfig;
+import com.studios.juke.juke.R;
+import com.studios.juke.juke.SignedInActivity;
 
 import java.util.Arrays;
 
@@ -20,7 +23,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     // Choose an arbitrary request code value
     private static final int RC_SIGN_IN = 123;
-    private static final String LOG_TAG= com.studios.juke.juke.AuthUiActivity.class.getSimpleName();    @Override
+    private static final String LOG_TAG= AuthUiActivity.class.getSimpleName();    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_ui);

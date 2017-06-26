@@ -24,7 +24,7 @@
 
         <!-- Needed to start Fragment activity from Activity intent -->
         <activity android:name=".SongListActivity" />
-        <activity android:name=".AuthUiActivity">
+        <activity android:name=".UserAuth.AuthUiActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

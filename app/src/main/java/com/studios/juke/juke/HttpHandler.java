@@ -14,7 +14,7 @@ import java.net.URL;
 
 public final class HttpHandler {
 
-    private static final String TAG = com.studios.juke.juke.HttpHandler.class.getSimpleName();
+    private static final String TAG = HttpHandler.class.getSimpleName();
 
     public HttpHandler() {
     }
