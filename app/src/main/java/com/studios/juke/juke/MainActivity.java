@@ -4,9 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -24,14 +31,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+import java.util.ArrayList;
+
 import static android.content.ContentValues.TAG;
 
-public class MainActivity extends Activity implements
-        SpotifyPlayer.NotificationCallback, ConnectionStateCallback
-{
-    // UI elements
-    private Button pauseButton;
-    private Button nextButton;
+public class MainActivity extends AppCompatActivity implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+
+    private EditText mEditSong;
+    private Button mSearchButton;
+    private Toolbar mToolbar;
 
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "256fa987714a455687888ed1f07c3630";
@@ -41,20 +50,31 @@ public class MainActivity extends Activity implements
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
 
-    private Player mPlayer;
+    //dont leave this static
+    public static Player mPlayer;
+    private String mAccessToken;
+    private ArrayList<Song> mSongs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pauseButton = (Button) findViewById(R.id.main_button_pause);
-        nextButton = (Button) findViewById(R.id.main_button_next);
-        pauseButton.setTag(1);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolbar);
+
+        mEditSong = (EditText) findViewById(R.id.edit_song);
+        mSearchButton = (Button) findViewById(R.id.search_button);
+
+       // pauseButton.setTag(1);
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int status = (Integer) v.getTag();
+                String searched_song = mEditSong.getText().toString();
+                new GetSpotifyTracks(searched_song).execute();
+
+
+                /*final int status = (Integer) v.getTag();
                 if (status == 1) {
                     mPlayer.pause(null);
                     pauseButton.setText("Play");
@@ -63,7 +83,7 @@ public class MainActivity extends Activity implements
                     mPlayer.resume(null);
                     pauseButton.setText("Pause");
                     v.setTag(1);
-                }
+                }*/
             }
         });
 
@@ -78,6 +98,34 @@ public class MainActivity extends Activity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tool_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+
+            case R.id.action_home:
+                return true;
+
+            case R.id.action_search:
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
@@ -85,7 +133,9 @@ public class MainActivity extends Activity implements
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
-                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
+                mAccessToken = response.getAccessToken();
+                Log.i("Access Token: ", mAccessToken);
+                Config playerConfig = new Config(this, mAccessToken, CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
@@ -133,11 +183,6 @@ public class MainActivity extends Activity implements
     @Override
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
-
-        //play a song!
-        //mPlayer.playUri(null, "spotify:track:15vzANxN8G9wWfwAJLLMCg", 0, 0);
-        //get URL?
-        new GetSpotifyTrack().execute();
     }
 
     @Override
@@ -160,10 +205,15 @@ public class MainActivity extends Activity implements
         Log.d("MainActivity", "Received connection message: " + message);
     }
 
+    private class GetSpotifyTracks extends AsyncTask<Void, Song, Void> {
+
+        String mSearchedSong;
 
 
+        GetSpotifyTracks(String searched_song){
+            mSearchedSong = searched_song;
+        }
 
-    private class GetSpotifyTrack extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -174,8 +224,8 @@ public class MainActivity extends Activity implements
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
-            String url = "https://api.spotify.com/v1/search?q=Weekend&type=track";
-            String jsonStr = sh.makeServiceCall(url);
+            String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
+            String jsonStr = sh.makeServiceCall(url, mAccessToken);
 
             Log.e(TAG, "Response from url: " + jsonStr);
             if (jsonStr != null) {
@@ -185,10 +235,19 @@ public class MainActivity extends Activity implements
                     // Getting JSON Array node
                     JSONObject tracks = root.getJSONObject("tracks");
                     JSONArray items = tracks.getJSONArray("items");
-                    JSONObject weekend = items.getJSONObject(3);
-                    String uri = weekend.getString("uri");
 
-                    mPlayer.playUri(null, uri, 0, 0);
+                    for(int i = 0; i < items.length(); ++i) {
+                        JSONObject track = items.getJSONObject(i);
+                        String song_name = track.getString("name");
+                        JSONArray artists = track.getJSONArray("artists");
+                        JSONObject main_artist = artists.getJSONObject(0);
+                        String artist = main_artist.getString("name");
+                        String uri = track.getString("uri");
+
+                        Song song = new Song(song_name, artist, uri);
+
+                        publishProgress(song);
+                    }
 
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -219,12 +278,18 @@ public class MainActivity extends Activity implements
         }
 
         @Override
+        protected void onProgressUpdate(Song... songs) {
+            super.onProgressUpdate(songs);
+            mSongs.add(songs[0]);
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+
+            //After all songs are queried.. THEN start intent!
+            Intent intent = SongListActivity.newIntent(MainActivity.this, mSongs);
+            startActivity(intent);
         }
     }
-
-
-
-
 }
