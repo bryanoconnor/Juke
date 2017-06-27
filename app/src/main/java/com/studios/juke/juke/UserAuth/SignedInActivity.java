@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.studios.juke.juke.R;
+import com.studios.juke.juke.SpotifyHomeActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,6 +62,8 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
+    @BindView(R.id.open_spotify)
+    Button mOpenSpotify;
 
     private IdpResponse mIdpResponse;
     private SignedInConfig mSignedInConfig;
@@ -99,6 +103,7 @@ public class SignedInActivity extends AppCompatActivity {
                     }
                 });
     }
+    
 
     @OnClick(R.id.delete_account)
     public void deleteAccountClicked() {
@@ -115,6 +120,14 @@ public class SignedInActivity extends AppCompatActivity {
                 .create();
 
         dialog.show();
+    }
+
+    @OnClick(R.id.open_spotify)
+    public void openSpotifyClicked() {
+
+        Intent i = new Intent(SignedInActivity.this, SpotifyHomeActivity.class);
+        startActivity(i);
+
     }
 
     private void deleteAccount() {

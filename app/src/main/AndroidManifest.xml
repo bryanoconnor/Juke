@@ -26,7 +26,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Needed to start Fragment activity from Activity intent -->
-        <activity android:name=".SongListActivity" />
+
         <activity android:name=".UserAuth.AuthUiActivity">
             <intent-filter>
 
@@ -37,21 +37,10 @@
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
 
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
-
         <activity android:name=".UserAuth.SignedInActivity" />
-
-
-        <activity
-            android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- Needed to start Fragment activity from Activity intent -->
         <activity android:name=".SongListActivity"/>
@@ -59,7 +48,7 @@
         </activity>
         <activity android:name=".SpotifyHomeActivity">
         </activity>
-        <activity android:name=".GenerateQrActivity">
+        <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
@@ -69,6 +58,7 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".GenerateQrActivity"/>
     </application>
 
 </manifest>

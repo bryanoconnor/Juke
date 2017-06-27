@@ -17,5 +17,6 @@
     <string name="delete_account_failed">Delete Account Failed</string>
     <string name="sign_out_failed">Sign Out Failed</string>
     <string name="sign_in">Sign In</string>
+    <string name="open_spotify">Open Spotify</string>
 
 </resources>

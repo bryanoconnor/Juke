@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/sign_out" />
+                android:text="a" />
 
             <Button
                 android:id="@+id/delete_account"
@@ -45,7 +45,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/delete_account_label"
+                android:text="a"
+                android:theme="@style/WarnButton"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/open_spotify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:text="@string/open_spotify"
                 android:theme="@style/WarnButton"
                 tools:ignore="ButtonStyle" />
 
