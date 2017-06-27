@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.studios.juke.juke">
+          package="com.studios.juke.juke">
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -12,13 +13,14 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id"/>
 
         <!-- Needed for LoginActivity to work -->
@@ -27,7 +29,13 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- Needed to start Fragment activity from Activity intent -->
-        <activity android:name="com.studios.juke.juke.SongListActivity"></activity>
+        <activity android:name=".SongListActivity"/>
+        <activity android:name=".SpotifySearchActivity">
+        </activity>
+        <activity android:name=".SpotifyHomeActivity">
+        </activity>
+        <activity android:name=".GenerateQrActivity">
+        </activity>
     </application>
 
 </manifest>

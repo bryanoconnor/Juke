@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,8 @@ import static com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE;
 
 public class SongListActivity extends SingleFragmentActivity {
 
+    private Toolbar mToolbar;
+
     public static final String EXTRA_SONG_ID = "com.studios.juke.juke.song_list_id";
 
     public static Intent newIntent(Context packageContext, ArrayList<Song> songs){
@@ -32,6 +35,13 @@ public class SongListActivity extends SingleFragmentActivity {
         return intent;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolbar);
+    }
     @Override
     protected Fragment createFragment(){
         return new SongListFragment();
