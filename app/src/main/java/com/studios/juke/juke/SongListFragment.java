@@ -1,33 +1,28 @@
 package com.studios.juke.juke;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.spotify.sdk.android.authentication.AuthenticationClient;
-import com.spotify.sdk.android.authentication.AuthenticationRequest;
-import com.spotify.sdk.android.authentication.AuthenticationResponse;
-
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE;
+import static com.studios.juke.juke.SpotifySearchActivity.mPlayer;
 
 
 public class SongListFragment extends Fragment {
 
-    private Toolbar mToolbar;
     private RecyclerView mSongRecyclerView;
     private ArrayList<Song> mSongs;
     private SongAdapter mAdapter;
@@ -46,19 +41,8 @@ public class SongListFragment extends Fragment {
         mSongRecyclerView = (RecyclerView) view.findViewById(R.id.song_recycler_view);
         mSongRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mToolbar = (Toolbar) view.findViewById(R.id.my_toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-
         updateUI();
-        setHasOptionsMenu(true);
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.tool_bar, menu);
-        super.onCreateOptionsMenu(menu,inflater);
     }
 
     private void updateUI() {
@@ -72,7 +56,8 @@ public class SongListFragment extends Fragment {
         private Song mSong;
         private TextView mTitleTextView;
         private TextView mArtistTextView;
-        //private ImageView mSolvedImageView;
+        private ImageView mPicture;
+        private ImageView mPlayImage;
 
 
         public SongHolder(LayoutInflater inflater, ViewGroup parent, int resource) {
@@ -83,7 +68,8 @@ public class SongListFragment extends Fragment {
             //pull out item text views in this constructor
             mTitleTextView = (TextView) itemView.findViewById(R.id.song_title);
             mArtistTextView = (TextView) itemView.findViewById(R.id.song_artist);
-            //mSolvedImageView = (ImageView) itemView.findViewById(R.id.crime_solved);
+            mPicture = (ImageView) itemView.findViewById(R.id.song_picture);
+            mPlayImage = (ImageView) itemView.findViewById(R.id.play_button);
         }
 
         //bind crimes to text views - called each time a new Crime should be displayed (called in CrimeHolder class)
@@ -91,13 +77,31 @@ public class SongListFragment extends Fragment {
             mSong = song;
             mTitleTextView.setText(mSong.getSongName());
             mArtistTextView.setText(mSong.getArtist());
+            new DownloadImageFromInternet(mPicture).execute(mSong.getImageUrl());
         }
 
         //overide the onclick method THIS IS WHERE A SONG WILL BE PLAYED
         @Override
         public void onClick(View view) {
-            //just play song for now
-            MainActivity.mPlayer.playUri(null, mSong.getUri(), 0, 0);
+            //set tag for play/pause functionality
+            //mPlayButton.setTag(1);
+            if(mPlayer.getPlaybackState().isPlaying == false) {
+                mPlayer.playUri(null, mSong.getUri(), 0, 0);
+                mPlayImage.setImageResource(R.drawable.ic_pause_black_48dp);
+                return;
+            }
+            else {
+                mPlayer.pause(null);
+                mPlayImage.setImageResource(R.drawable.ic_play_arrow_black_48dp);
+               /* final int status = (Integer) view.getTag();
+                if (status == 1) {
+                    mPlayer.pause(null);
+                    view.setTag(0);
+                } else {
+                    mPlayer.resume(null);
+                    view.setTag(1);
+                }*/
+            }
         }
     }
 
@@ -127,7 +131,6 @@ public class SongListFragment extends Fragment {
             //we defined the bind() method in the crimeHolder class
             //it will bind either normal or serious holder
             ((SongHolder) holder).bind(song);
-
         }
 
         @Override
@@ -139,5 +142,33 @@ public class SongListFragment extends Fragment {
         public int getItemViewType(int position) {
 
         }*/
+    }
+
+    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap>
+    {
+        ImageView imageView;
+
+        public DownloadImageFromInternet(ImageView imageView) {
+            this.imageView = imageView;
+            //Toast.makeText(getApplicationContext(), "Please wait, it may take a few minute...", Toast.LENGTH_SHORT).show();
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageURL = urls[0];
+            Bitmap bimage = null;
+            try {
+                InputStream in = new java.net.URL(imageURL).openStream();
+                bimage = BitmapFactory.decodeStream(in);
+
+            } catch (Exception e) {
+                Log.e("Error Message", e.getMessage());
+                e.printStackTrace();
+            }
+            return bimage;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
     }
 }

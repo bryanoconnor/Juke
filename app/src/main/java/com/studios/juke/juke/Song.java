@@ -7,14 +7,14 @@ public class Song implements Serializable{
 
     private String mSongName;
     private String mArtist;
-    //private String mImageUrl;
+    private String mImageUrl;
     private String mUri;
 
-    public Song(String songName, String artist, String uri/*,String imageUrl*/){
+    public Song(String songName, String artist, String uri, String imageUrl){
         mSongName = songName;
         mArtist = artist;
         mUri = uri;
-        //mImageUrl = imageUrl;
+        mImageUrl = imageUrl;
     }
 
     public String getSongName() {
@@ -25,9 +25,9 @@ public class Song implements Serializable{
         return mArtist;
     }
 
-    /*public String getImageUrl() {
+    public String getImageUrl() {
         return mImageUrl;
-    }*/
+    }
 
     public String getUri(){ return mUri; }
 

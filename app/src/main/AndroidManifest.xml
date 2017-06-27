@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     package="com.studios.juke.juke">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <application
         android:allowBackup="true"
@@ -27,9 +29,11 @@
         <activity android:name=".SongListActivity" />
         <activity android:name=".UserAuth.AuthUiActivity">
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
+
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.FacebookActivity"
@@ -37,9 +41,25 @@
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
 
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id"/>
+
         <activity android:name=".UserAuth.SignedInActivity" />
 
+
         <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <!-- Needed to start Fragment activity from Activity intent -->
+        <activity android:name=".SongListActivity"/>
+        <activity android:name=".SpotifySearchActivity">
+        </activity>
+        <activity android:name=".SpotifyHomeActivity">
+        </activity>
+        <activity android:name=".GenerateQrActivity">
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>

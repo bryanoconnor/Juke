@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 
-public abstract class SingleFragmentActivity extends AppCompatActivity {
+public abstract class SingleFragmentActivity extends MenuBarOptions {
 
     //abstract method to create fragment
     protected abstract Fragment createFragment();
