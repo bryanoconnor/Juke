@@ -89,6 +89,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
                 mAccessToken = response.getAccessToken();
                 Log.i("Access Token: ", mAccessToken);
+
                 Config playerConfig = new Config(this, mAccessToken, CLIENT_ID);
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
