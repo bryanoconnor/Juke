@@ -38,7 +38,6 @@
             android:label="@string/app_name" />
 
         <activity android:name=".UserAuth.SignedInActivity" />
-        <activity android:name=".AcountActivity"></activity>
 
         <activity
             android:name="com.facebook.CustomTabActivity"
