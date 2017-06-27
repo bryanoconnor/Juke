@@ -2,8 +2,6 @@ package com.studios.juke.juke;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -20,7 +18,8 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import static com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE;
+
+import java.util.ArrayList;
 
 
 public class SongListActivity extends SingleFragmentActivity {
@@ -28,6 +27,8 @@ public class SongListActivity extends SingleFragmentActivity {
     private Toolbar mToolbar;
 
     public static final String EXTRA_SONG_ID = "com.studios.juke.juke.song_list_id";
+
+
 
     public static Intent newIntent(Context packageContext, ArrayList<Song> songs){
         Intent intent = new Intent(packageContext, SongListActivity.class);
@@ -46,4 +47,6 @@ public class SongListActivity extends SingleFragmentActivity {
     protected Fragment createFragment(){
         return new SongListFragment();
     }
+
+
 }
