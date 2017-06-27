@@ -7,5 +7,15 @@
     <string name="unknown_error">An unknown error occurred</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="unknown_response">Unexpected onActivityResult response code</string>
+    <string name="signed_in_header">My Account</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="delete_account_label">Delete Account</string>
+    <string name="user_profile_header">User profile:</string>
+    <string name="profile_picture_content_desc">Profile picture</string>
+    <string name="idp_token">IDP Token</string>
+    <string name="idp_secret">IDP Secret</string>
+    <string name="delete_account_failed">Delete Account Failed</string>
+    <string name="sign_out_failed">Sign Out Failed</string>
+    <string name="sign_in">Sign In</string>
 
 </resources>
