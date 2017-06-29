@@ -21,22 +21,29 @@ public final class HttpHandler {
     public HttpHandler() {
     }
 
-    public String makeServiceCall(String reqUrl, String accessToken) {
+    public String makeServiceCall(String reqUrl, String accessToken) throws IOException {
         String response = null;
+        HttpURLConnection conn = null;
+        InputStream in = null;
         try {
             URL url = new URL(reqUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
             conn.connect();
+
+            Log.i("ResponseCode", "conn.getResponseCode()");
+            // read the response
+
             if(conn.getResponseCode() == 200){
-                // read the response
-                InputStream in = new BufferedInputStream(conn.getInputStream());
+                in = new BufferedInputStream(conn.getInputStream());
                 response = convertStreamToString(in);
+            }else {
+                Log.e("ERROR_RESPONSE","Error response code: " + conn.getResponseCode());
             }
-            else{
-                Log.e("Error_Response", "ERROR: " + conn.getResponseCode());
-            }
+
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
@@ -45,6 +52,16 @@ public final class HttpHandler {
             Log.e(TAG, "IOException: " + e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
+        } finally {
+            if (conn != null){
+                conn.disconnect();
+            }
+            if(in != null){
+                // Closing the input stream could throw an IOException, which is why
+                // the makeHttpRequest(URL url) method signature specifies than an IOException
+                // could be thrown.
+                in.close();
+            }
         }
         return response;
     }
