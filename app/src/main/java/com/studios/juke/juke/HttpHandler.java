@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import static java.lang.System.in;
+
 public final class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
@@ -26,10 +28,15 @@ public final class HttpHandler {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
             conn.setRequestMethod("GET");
-            //conn.connect();
-            // read the response
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            response = convertStreamToString(in);
+            conn.connect();
+            if(conn.getResponseCode() == 200){
+                // read the response
+                InputStream in = new BufferedInputStream(conn.getInputStream());
+                response = convertStreamToString(in);
+            }
+            else{
+                Log.e("Error_Response", "ERROR: " + conn.getResponseCode());
+            }
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
