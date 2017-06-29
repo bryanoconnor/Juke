@@ -1,13 +1,15 @@
 package com.studios.juke.juke;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,22 +24,19 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import static android.content.ContentValues.TAG;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback, LoaderCallbacks<List<Song>> {
 
     private EditText mEditSong;
-    private Button mSearchButton;
     private Toolbar mToolbar;
-
+    public static final String LOG_TAG = "TEST_LOGS";
+    private static final int SONG_LOADER_ID = 1;
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "256fa987714a455687888ed1f07c3630";
     // TODO: Replace with your redirect URI
@@ -49,27 +48,21 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
     //dont leave this static
     public static Player mPlayer;
     private String mAccessToken;
+    private String mSearchedSong;
     private String mRefreshToken;
     private ArrayList<Song> mSongs = new ArrayList<>();
+    @BindView(R.id.search_button)
+    Button mSearchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify_search);
-
+        ButterKnife.bind(this);
         mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mToolbar);
 
         mEditSong = (EditText) findViewById(R.id.edit_song);
-        mSearchButton = (Button) findViewById(R.id.search_button);
-
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searched_song = mEditSong.getText().toString();
-                new GetSpotifyTracks(searched_song).execute();
-            }
-        });
 
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
@@ -78,17 +71,69 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
         AuthenticationRequest request = builder.build();
 
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+        Log.i("Access Token: ", "BREAK------------------------------------------");
 
+        //mSearchButton = (Button) findViewById(R.id.search_button);
+
+
+/*        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchedSong = mEditSong.getText().toString();
+                //String searched_song = mEditSong.getText().toString();
+                //new GetSpotifyTracks(searched_song).execute();
+                // Check for network connectivity
+                ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+                if(isConnected) {
+                    // Get instance of LoaderManager and start the loader
+                    Log.i(LOG_TAG, "initLoader() Called");
+                    getLoaderManager().initLoader(SONG_LOADER_ID, null, this);
+                }else{
+                    //progressBar.setVisibility(View.GONE);
+                    //emptyView.setText("No Internet Connection");
+                }
+            }
+        });*/
+
+
+
+    }
+
+    @OnClick(R.id.search_button)
+    public void search() {
+        mSearchedSong = mEditSong.getText().toString();
+        //String searched_song = mEditSong.getText().toString();
+        //new GetSpotifyTracks(searched_song).execute();
+        // Check for network connectivity
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if(isConnected) {
+            // Get instance of LoaderManager and start the loader
+            Log.i(LOG_TAG, "initLoader() Called");
+            getLoaderManager().initLoader(SONG_LOADER_ID, null, this);
+        }else{
+            //progressBar.setVisibility(View.GONE);
+            //emptyView.setText("No Internet Connection");
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
+        Log.i("onActivityResult", Integer.toString(requestCode));
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
+            Log.i("BREAK", "--------------------------------------------------------");
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            Log.i("BREAK2", "--------------------------------------------------------");
+            Log.i("BREAK3", response.getType().toString());
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
+
                 mAccessToken = response.getAccessToken();
                 Log.i("Access Token: ", mAccessToken);
 
@@ -108,6 +153,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
                 });
             }
         }
+
     }
 
     @Override
@@ -162,7 +208,38 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
         Log.d("SpotifySearchActivity", "Received connection message: " + message);
     }
 
-    private class GetSpotifyTracks extends AsyncTask<Void, Song, Void> {
+    @Override
+    public Loader<List<Song>> onCreateLoader(int i, Bundle bundle) {
+
+        String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
+        return new SpotifySearchLoader(this, url,mAccessToken );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Song>> loader, List<Song> songs) {
+        mSongs.clear();
+
+        if (songs != null && !songs.isEmpty()) {
+            //progressBar.setVisibility(View.GONE);
+            mSongs.addAll(songs);
+            Intent intent = SongListActivity.newIntent(SpotifySearchActivity.this, mSongs);
+            startActivity(intent);
+        } else {
+            //progressBar.setVisibility(View.GONE);
+            Toast.makeText(SpotifySearchActivity.this, "Error Populating List", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Song>> loader) {
+        // Clear the adapter of previous earthquake data
+        mSongs.clear();
+        Log.i("SpotifySearchActivity", "onLoaderReset() Called");
+    }
+
+ /*   private class GetSpotifyTracks extends AsyncTask<Void, Song, Void> {
 
         String mSearchedSong;
 
@@ -265,5 +342,5 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
             Intent intent = SongListActivity.newIntent(SpotifySearchActivity.this, mSongs);
             startActivity(intent);
         }
-    }
+    }*/
 }
