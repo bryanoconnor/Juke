@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import static java.lang.System.in;
+
 public final class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
@@ -31,6 +33,7 @@ public final class HttpHandler {
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
             conn.connect();
+
             Log.i("ResponseCode", "conn.getResponseCode()");
             // read the response
 

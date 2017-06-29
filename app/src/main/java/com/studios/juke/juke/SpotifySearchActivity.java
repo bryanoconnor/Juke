@@ -48,6 +48,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
     //dont leave this static
     public static Player mPlayer;
     private String mAccessToken;
+    private String mRefreshToken;
     private ArrayList<Song> mSongs = new ArrayList<>();
 
     @Override
@@ -181,7 +182,9 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
             mSongs.clear();
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
+            // use string builder?? then string
             String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
+
             String jsonStr = sh.makeServiceCall(url, mAccessToken);
 
             Log.e(TAG, "Response from url: " + jsonStr);
