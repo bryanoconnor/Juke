@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
@@ -177,7 +178,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(Void... arg0){
             //start with empty arraylist
             mSongs.clear();
             HttpHandler sh = new HttpHandler();
@@ -185,7 +186,12 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
             // use string builder?? then string
             String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
 
-            String jsonStr = sh.makeServiceCall(url, mAccessToken);
+            String jsonStr = null;
+            try {
+                jsonStr = sh.makeServiceCall(url, mAccessToken);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             Log.e(TAG, "Response from url: " + jsonStr);
             if (jsonStr != null) {
