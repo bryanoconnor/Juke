@@ -181,8 +181,9 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
             mSongs.clear();
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
+            // use string builder?? then string
             String url = "https://api.spotify.com/v1/search?q=" + mSearchedSong + "&type=track";
-           // if()
+
             String jsonStr = sh.makeServiceCall(url, mAccessToken);
 
             Log.e(TAG, "Response from url: " + jsonStr);

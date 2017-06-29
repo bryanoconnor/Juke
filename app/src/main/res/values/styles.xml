@@ -11,4 +11,8 @@
         <item name="colorButtonNormal">@color/material_red_a200</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+    <style name="SpotifyButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">#84bd00</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>
