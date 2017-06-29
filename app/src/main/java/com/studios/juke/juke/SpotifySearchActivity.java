@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -44,7 +43,8 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
     // Request code that will be used to verify if the result comes from correct activity
     // Can be any integer
     private static final int REQUEST_CODE = 1337;
-
+    public static boolean isLoaded;
+    private static boolean runOnce = true;
     //dont leave this static
     public static Player mPlayer;
     private String mAccessToken;
@@ -104,6 +104,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
 
     @OnClick(R.id.search_button)
     public void search() {
+        isLoaded = true;
         mSearchedSong = mEditSong.getText().toString();
         //String searched_song = mEditSong.getText().toString();
         //new GetSpotifyTracks(searched_song).execute();
@@ -115,11 +116,19 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
         if(isConnected) {
             // Get instance of LoaderManager and start the loader
             Log.i(LOG_TAG, "initLoader() Called");
-            getLoaderManager().initLoader(SONG_LOADER_ID, null, this);
+            if(runOnce){
+                getLoaderManager().initLoader(SONG_LOADER_ID, null, this);
+                runOnce = false;
+            }else{
+                getLoaderManager().restartLoader(SONG_LOADER_ID, null, this);
+            }
+
         }else{
             //progressBar.setVisibility(View.GONE);
             //emptyView.setText("No Internet Connection");
         }
+
+
     }
 
     @Override
@@ -219,14 +228,16 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
     public void onLoadFinished(Loader<List<Song>> loader, List<Song> songs) {
         mSongs.clear();
 
-        if (songs != null && !songs.isEmpty()) {
+        if (songs != null && !songs.isEmpty() && isLoaded) {
             //progressBar.setVisibility(View.GONE);
+            isLoaded = false;
             mSongs.addAll(songs);
             Intent intent = SongListActivity.newIntent(SpotifySearchActivity.this, mSongs);
             startActivity(intent);
         } else {
             //progressBar.setVisibility(View.GONE);
-            Toast.makeText(SpotifySearchActivity.this, "Error Populating List", Toast.LENGTH_LONG).show();
+            //Toast.makeText(SpotifySearchActivity.this, "Error Populating List", Toast.LENGTH_LONG).show();
+            Log.i(LOG_TAG, "Error populating list");
         }
 
 
@@ -234,7 +245,7 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
 
     @Override
     public void onLoaderReset(Loader<List<Song>> loader) {
-        // Clear the adapter of previous earthquake data
+        // Clear the adapter of previous song data
         mSongs.clear();
         Log.i("SpotifySearchActivity", "onLoaderReset() Called");
     }
