@@ -137,10 +137,9 @@ public class SpotifySearchActivity extends MenuBarOptions implements SpotifyPlay
         Log.i("onActivityResult", Integer.toString(requestCode));
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
-            Log.i("BREAK", "--------------------------------------------------------");
+
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            Log.i("BREAK2", "--------------------------------------------------------");
-            Log.i("BREAK3", response.getType().toString());
+
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
 
                 mAccessToken = response.getAccessToken();
