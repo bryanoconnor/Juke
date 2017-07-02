@@ -31,8 +31,8 @@ public class SongAdapter extends ArrayAdapter<Song> {
         }
 
         ImageView songImageView = (ImageView) songItemView.findViewById(R.id.song_picture);
-        TextView songTitle = (TextView) songImageView.findViewById(R.id.song_title);
-        TextView songArtist = (TextView)songImageView.findViewById(R.id.song_artist);
+        TextView songTitle = (TextView) songItemView.findViewById(R.id.song_title);
+        TextView songArtist = (TextView)songItemView.findViewById(R.id.song_artist);
 
         Song song = getItem(position);
 
