@@ -6,10 +6,6 @@ import android.util.Log;
 
 import java.util.List;
 
-/**
- * Created by Jack on 6/29/2017.
- */
-
 public class SpotifySearchLoader extends AsyncTaskLoader<List<Song>> {
 
     private String mUrl;

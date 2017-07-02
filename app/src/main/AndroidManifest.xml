@@ -35,11 +35,20 @@
         <activity android:name=".UserAuth.SignedInActivity" />
 
         <!-- Needed to start Fragment activity from Activity intent -->
-        <activity android:name=".SongListActivity" />
-        <activity android:name=".SpotifySearchActivity"></activity>
-        <activity android:name=".SpotifyHomeActivity"></activity>
+
+        <activity android:name=".SongListActivity"/>
+        <activity android:name=".SpotifySearchActivity">
+        </activity>
+        <activity android:name=".SpotifyHomeActivity">
+        </activity>
+
+        <activity android:name=".CreateParty"/>
+
+
+
         <activity android:name=".GenerateQrActivity" />
         <activity android:name=".PartyActivity"></activity>
+
     </application>
 
 </manifest>
