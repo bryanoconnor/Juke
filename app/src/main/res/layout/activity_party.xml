@@ -7,7 +7,7 @@
     android:padding="16dp">
 
     <ListView
-        android:id="@+id/messageListView"
+        android:id="@+id/partyListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout"
@@ -26,14 +26,14 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/messageEditText"
+            android:id="@+id/partyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/sendButton"
+            android:id="@+id/partySearchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
