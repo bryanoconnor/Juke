@@ -38,7 +38,7 @@ public class MenuBarOptions extends AppCompatActivity {
                 return true;
 
             case R.id.action_search:
-                Intent intent2 = new Intent(MenuBarOptions.this, SpotifySearchActivity.class);
+                Intent intent2 = new Intent(MenuBarOptions.this, PartyActivity.class);
                 startActivity(intent2);
                 return true;
 

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -133,7 +134,7 @@ public class PartyActivity extends MenuBarOptions {
 
     @OnClick(R.id.partySearchButton)
     public void search(View view) {
-        Intent intent = new Intent(this, SongListFragment.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(EXTRA_SEARCH_KEYWORD, mSongEditText.getText().toString());
         startActivityForResult(intent, RC_SONG_PICKER);
     }
@@ -141,10 +142,10 @@ public class PartyActivity extends MenuBarOptions {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK){
+        if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK) {
             final Song songPicked = (Song) data.getExtras().getSerializable(RETURNED_SONG_KEY);
-            Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
+            mPartyDatabaseReference.push().setValue(songPicked);
+            /*Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
             StorageReference photoRef = mSongPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
             photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -153,9 +154,7 @@ public class PartyActivity extends MenuBarOptions {
                     Song addedSong = new Song(songPicked.getSongName(), songPicked.getArtist(), songPicked.getUri(), downloadUrl.toString());
                     mPartyDatabaseReference.push().setValue(addedSong);
                 }
-            });
-        }else if(resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "Search canceled", Toast.LENGTH_SHORT).show();
+            });*/
         }
     }
 

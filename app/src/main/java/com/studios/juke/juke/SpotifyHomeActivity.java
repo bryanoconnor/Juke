@@ -30,7 +30,6 @@ public class SpotifyHomeActivity extends MenuBarOptions{
             public void onClick(View v) {
 
                 Intent intent = new Intent(SpotifyHomeActivity.this, CreateParty.class);
-
                 startActivity(intent);
             }
         });
