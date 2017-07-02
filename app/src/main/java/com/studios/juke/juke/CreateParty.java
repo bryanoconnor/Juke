@@ -37,7 +37,7 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_generate_qr);
+        setContentView(R.layout.activity_create_party);
 
         mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mToolbar);
