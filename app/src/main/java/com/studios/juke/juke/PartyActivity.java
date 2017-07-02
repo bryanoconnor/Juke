@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -35,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PartyActivity extends AppCompatActivity {
+public class PartyActivity extends MenuBarOptions {
 
     private static final String LOG_TAG = "PartyActivity";
 
@@ -47,7 +47,7 @@ public class PartyActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     private String mUsername;
     private SongAdapter mSongAdapter;
-
+    private Toolbar mToolbar;
 
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
@@ -57,6 +57,8 @@ public class PartyActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mSongPhotosStorageReference;
+    private DatabaseReference mMembersDatabaseReference;
+    private DatabaseReference mSongsDatabaseReference;
 
     @BindView(R.id.partyListView)
     ListView mSongListView;
@@ -73,13 +75,16 @@ public class PartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_party);
         ButterKnife.bind(this);
 
+        // Initialize Toolbar
+        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolbar);
 
         // Initialize Firebase components
         mUsername = ANONYMOUS;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mPartyDatabaseReference = mFirebaseDatabase.getReference().child("songs");
+        mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
         mSongPhotosStorageReference = mFirebaseStorage.getReference().child("song_photos");
 
         // Initialize song ListView and its adapter
@@ -137,17 +142,14 @@ public class PartyActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("AAA", Integer.toString(requestCode));
         if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK) {
             final Song songPicked = (Song) data.getExtras().getSerializable(RETURNED_SONG_KEY);
-            Log.e("AAA", Integer.toString(requestCode));
             mPartyDatabaseReference.push().setValue(songPicked);
             /*Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
             StorageReference photoRef = mSongPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
             photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.e("AAA", "SSSS");
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     Song addedSong = new Song(songPicked.getSongName(), songPicked.getArtist(), songPicked.getUri(), downloadUrl.toString());
                     mPartyDatabaseReference.push().setValue(addedSong);
@@ -221,5 +223,9 @@ public class PartyActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    private void createParty(){
+
     }
 }
