@@ -18,9 +18,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.studios.juke.juke.SpotifySearchActivity.mPlayer;
-
-
 public class SongListFragment extends Fragment {
 
     private RecyclerView mSongRecyclerView;
@@ -85,20 +82,20 @@ public class SongListFragment extends Fragment {
         public void onClick(View view) {
             //set tag for play/pause functionality
             //mPlayButton.setTag(1);
-            if(mPlayer.getPlaybackState().isPlaying == false) {
-                mPlayer.playUri(null, mSong.getUri(), 0, 0);
+            if(SpotifyUtils.getPlayer().getPlaybackState().isPlaying == false) {
+                SpotifyUtils.getPlayer().playUri(null, mSong.getUri(), 0, 0);
                 mPlayImage.setImageResource(R.drawable.ic_pause_black_48dp);
                 return;
             }
             else {
-                mPlayer.pause(null);
+                SpotifyUtils.getPlayer().pause(null);
                 mPlayImage.setImageResource(R.drawable.ic_play_arrow_black_48dp);
                /* final int status = (Integer) view.getTag();
                 if (status == 1) {
-                    mPlayer.pause(null);
+                    SpotifyUtils.getPlayer().pause(null);
                     view.setTag(0);
                 } else {
-                    mPlayer.resume(null);
+                    SpotifyUtils.getPlayer().resume(null);
                     view.setTag(1);
                 }*/
             }

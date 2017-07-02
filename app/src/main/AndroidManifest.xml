@@ -45,7 +45,7 @@
         <activity android:name=".SpotifyHomeActivity">
         </activity>
 
-        <activity android:name=".GenerateQrActivity"/>
+        <activity android:name=".CreateParty"/>
     </application>
 
 </manifest>
