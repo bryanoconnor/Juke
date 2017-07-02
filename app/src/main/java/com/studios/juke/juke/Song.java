@@ -10,6 +10,7 @@ public class Song implements Serializable{
     private String mImageUrl;
     private String mUri;
 
+
     public Song(String songName, String artist, String uri, String imageUrl){
         mSongName = songName;
         mArtist = artist;
