@@ -128,7 +128,6 @@ public class PartyActivity extends AppCompatActivity {
 
     @OnClick(R.id.partySearchButton)
     public void search(View view) {
-
         Intent intent = new Intent(this, SongListFragment.class);
         intent.putExtra(EXTRA_SEARCH_KEYWORD, mSongEditText.getText().toString());
         startActivityForResult(intent, RC_SONG_PICKER);
