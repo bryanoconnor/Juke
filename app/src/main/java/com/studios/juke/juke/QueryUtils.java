@@ -13,10 +13,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.login.widget.ProfilePictureView.TAG;
 
 /**
  * Created by Jack on 6/29/2017.
@@ -67,6 +70,10 @@ public class QueryUtils {
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "MalformedURLException: " + e.getMessage());
+        } catch (ProtocolException e) {
+            Log.e(TAG, "ProtocolException: " + e.getMessage());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the song JSON results.", e);
         } finally {

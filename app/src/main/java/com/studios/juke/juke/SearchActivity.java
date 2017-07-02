@@ -111,8 +111,6 @@ public class SearchActivity extends MenuBarOptions implements LoaderCallbacks<Li
             isLoaded = false;
             mSongs.addAll(songs);
             updateUI();
-            //Intent intent = SongListActivity.newIntent(SearchActivity.this, mSongs);
-            //startActivity(intent);
         } else {
             //progressBar.setVisibility(View.GONE);
             //Toast.makeText(SpotifySearchActivity.this, "Error Populating List", Toast.LENGTH_LONG).show();
