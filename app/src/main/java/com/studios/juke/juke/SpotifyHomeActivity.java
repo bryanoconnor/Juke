@@ -2,7 +2,6 @@ package com.studios.juke.juke;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -29,10 +28,11 @@ public class SpotifyHomeActivity extends MenuBarOptions{
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SpotifyHomeActivity.this, GenerateQrActivity.class);
+                Intent intent = new Intent(SpotifyHomeActivity.this, PartyActivity.class);
                 startActivity(intent);
             }
         });
+
         mJoinButton = (Button) findViewById(R.id.join_party);
     }
 }
