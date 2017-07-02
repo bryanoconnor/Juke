@@ -39,9 +39,11 @@ public class Song implements Serializable{
         mArtist = artist;
     }
 
-   /* public void setImageUrl(String imageUrl) {
+   public void setImageUrl(String imageUrl) {
         mImageUrl = imageUrl;
-    }*/
+    }
 
     public void setUri(String uri) { mUri = uri; }
+
+
 }
