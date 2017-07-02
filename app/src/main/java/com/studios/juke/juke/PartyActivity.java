@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PartyActivity extends AppCompatActivity {
+public class PartyActivity extends MenuBarOptions {
 
     private static final String LOG_TAG = "PartyActivity";
 
@@ -46,7 +46,7 @@ public class PartyActivity extends AppCompatActivity {
     public static final int RC_SIGN_IN = 1;
     private String mUsername;
     private SongAdapter mSongAdapter;
-
+    private Toolbar mToolbar;
 
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
@@ -56,6 +56,8 @@ public class PartyActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mSongPhotosStorageReference;
+    private DatabaseReference mMembersDatabaseReference;
+    private DatabaseReference mSongsDatabaseReference;
 
     @BindView(R.id.partyListView)
     ListView mSongListView;
@@ -72,13 +74,16 @@ public class PartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_party);
         ButterKnife.bind(this);
 
+        // Initialize Toolbar
+        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mToolbar);
 
         // Initialize Firebase components
         mUsername = ANONYMOUS;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
-        mPartyDatabaseReference = mFirebaseDatabase.getReference().child("songs");
+        mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
         mSongPhotosStorageReference = mFirebaseStorage.getReference().child("song_photos");
 
         // Initialize song ListView and its adapter
@@ -136,25 +141,21 @@ public class PartyActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RC_SIGN_IN){
-            if(resultCode == RESULT_OK){
-                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
-            } else if(resultCode == RESULT_CANCELED){
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
-                finish();
-            } else if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK){
-                final Song songPicked = (Song) data.getExtras().getSerializable(RETURNED_SONG_KEY);
-                Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
-                StorageReference photoRef = mSongPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
-                photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        Song addedSong = new Song(songPicked.getSongName(), songPicked.getArtist(), songPicked.getUri(), downloadUrl.toString());
-                        mPartyDatabaseReference.push().setValue(addedSong);
-                    }
-                });
-            }
+
+        if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK){
+            final Song songPicked = (Song) data.getExtras().getSerializable(RETURNED_SONG_KEY);
+            Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
+            StorageReference photoRef = mSongPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
+            photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Song addedSong = new Song(songPicked.getSongName(), songPicked.getArtist(), songPicked.getUri(), downloadUrl.toString());
+                    mPartyDatabaseReference.push().setValue(addedSong);
+                }
+            });
+        }else if(resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Search canceled", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -223,5 +224,9 @@ public class PartyActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    private void createParty(){
+
     }
 }
