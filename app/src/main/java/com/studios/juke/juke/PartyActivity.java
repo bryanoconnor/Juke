@@ -1,21 +1,17 @@
 package com.studios.juke.juke;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -23,9 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.studios.juke.juke.UserAuth.AuthUiActivity;
 
 import java.util.ArrayList;
@@ -39,26 +32,24 @@ public class PartyActivity extends MenuBarOptions {
 
     private static final String LOG_TAG = "PartyActivity";
 
-    public static final String ANONYMOUS = "anonymous";
     private static final String RETURNED_SONG_KEY = "returnedSong";
     private static final String EXTRA_SEARCH_KEYWORD = "keyword";
     public static final int DEFAULT_SEARCH_LENGTH_LIMIT = 100;
     public static final int RC_SONG_PICKER = 2;
-    public static final int RC_SIGN_IN = 1;
-    private String mUsername;
     private SongAdapter mSongAdapter;
     private Toolbar mToolbar;
+    private List<Song> songList;
 
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mPartyDatabaseReference;
+    private DatabaseReference mMembersDatabaseReference;
+    private DatabaseReference mSongsDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseStorage mFirebaseStorage;
-    private StorageReference mSongPhotosStorageReference;
-    private DatabaseReference mMembersDatabaseReference;
-    private DatabaseReference mSongsDatabaseReference;
+    private String mPartyID;
+
 
     @BindView(R.id.partyListView)
     ListView mSongListView;
@@ -80,15 +71,15 @@ public class PartyActivity extends MenuBarOptions {
         setSupportActionBar(mToolbar);
 
         // Initialize Firebase components
-        mUsername = ANONYMOUS;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseStorage = FirebaseStorage.getInstance();
         mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
-        mSongPhotosStorageReference = mFirebaseStorage.getReference().child("song_photos");
+        createParty();
+
+
 
         // Initialize song ListView and its adapter
-        List<Song> songList = new ArrayList<>();
+        songList = new ArrayList<>();
         mSongAdapter = new SongAdapter(this, R.layout.list_item_song, songList);
         mSongListView.setAdapter(mSongAdapter);
 
@@ -144,34 +135,22 @@ public class PartyActivity extends MenuBarOptions {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SONG_PICKER && resultCode == RESULT_OK) {
             final Song songPicked = (Song) data.getExtras().getSerializable(RETURNED_SONG_KEY);
-            mPartyDatabaseReference.push().setValue(songPicked);
-            /*Uri selectedImageUri = Uri.parse(songPicked.getImageUrl());
-            StorageReference photoRef = mSongPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
-            photoRef.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Song addedSong = new Song(songPicked.getSongName(), songPicked.getArtist(), songPicked.getUri(), downloadUrl.toString());
-                    mPartyDatabaseReference.push().setValue(addedSong);
-                }
-            });*/
+            mSongsDatabaseReference.push().setValue(songPicked);
         }
     }
 
     private void onSignedOutCleanup() {
-        mUsername = ANONYMOUS;
         mSongAdapter.clear();
         detachDatabaseReadListener();
     }
 
     private void onSignedInInitialized(String displayName) {
-        mUsername = displayName;
         attachDatabaseReadListener();
     }
 
     private void detachDatabaseReadListener(){
         if(mChildEventListener != null){
-            mPartyDatabaseReference.removeEventListener(mChildEventListener);
+            mSongsDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
     }
@@ -193,9 +172,13 @@ public class PartyActivity extends MenuBarOptions {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Song song = dataSnapshot.getValue(Song.class);
+                    //songList.remove(song);
+                    mSongAdapter.remove(song);
+                    mSongAdapter.notifyDataSetChanged();
+
 
                 }
-
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
@@ -206,7 +189,7 @@ public class PartyActivity extends MenuBarOptions {
 
                 }
             };
-            mPartyDatabaseReference.addChildEventListener(mChildEventListener);
+            mSongsDatabaseReference.addChildEventListener(mChildEventListener);
         }
     }
 
@@ -226,6 +209,9 @@ public class PartyActivity extends MenuBarOptions {
     }
 
     private void createParty(){
-
+        Party thisParty = new Party("songs", "members");
+        mPartyID = mPartyDatabaseReference.push().getKey();
+        mSongsDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("songs");
+        mMembersDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("members");
     }
 }

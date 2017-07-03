@@ -1,9 +1,11 @@
 package com.studios.juke.juke;
 
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class Song implements Serializable{
+public class Song implements Serializable, Comparable{
 
     private String mSongName;
     private String mArtist;
@@ -52,4 +54,20 @@ public class Song implements Serializable{
     public void setUri(String uri) { mUri = uri; }
 
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+        Song song = (Song) o;
+        if(song.getSongName().equals(mSongName))
+            return 0;
+        else
+            return -1;
+    }
+
+    public boolean equals(Object obj){
+        Song song = (Song) obj;
+        if(song.getSongName().equals(mSongName))
+            return true;
+        else
+            return false;
+    }
 }
