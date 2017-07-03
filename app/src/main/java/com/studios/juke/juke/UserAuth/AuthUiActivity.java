@@ -9,8 +9,6 @@ import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
@@ -25,13 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class AuthUiActivity extends AppCompatActivity {
-    @BindView(R.id.sign_in)
-    Button mSignIn;
+
     // Choose an arbitrary request code value
     private static final int RC_SIGN_IN = 100;
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
@@ -41,21 +34,21 @@ public class AuthUiActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_ui);
-        ButterKnife.bind(this);
 
         // Check to see if signed in already
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             startSignedInActivity(null);
             finish();
             return;
+        } else {
+            signIn();
         }
 
     }
 
-    @OnClick(R.id.sign_in)
-    public void signIn(View view) {
+    //@OnClick(R.id.sign_in)
+    public void signIn() {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -110,6 +103,7 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
+        signIn();
     }
 
     private void startSignedInActivity(IdpResponse response) {

@@ -124,10 +124,8 @@ public class SignedInActivity extends AppCompatActivity {
 
     @OnClick(R.id.open_spotify)
     public void openSpotifyClicked() {
-
         Intent i = new Intent(SignedInActivity.this, SpotifyHomeActivity.class);
         startActivity(i);
-
     }
 
     private void deleteAccount() {
