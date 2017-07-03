@@ -31,7 +31,7 @@ import butterknife.OnClick;
 public class PartyActivity extends MenuBarOptions {
 
     private static final String LOG_TAG = "PartyActivity";
-
+    public static final String ANONYMOUS = "anonymous";
     private static final String RETURNED_SONG_KEY = "returnedSong";
     private static final String EXTRA_SEARCH_KEYWORD = "keyword";
     public static final int DEFAULT_SEARCH_LENGTH_LIMIT = 100;
@@ -39,6 +39,7 @@ public class PartyActivity extends MenuBarOptions {
     private SongAdapter mSongAdapter;
     private Toolbar mToolbar;
     private List<Song> songList;
+
 
     // Firebase instance variables
     private FirebaseDatabase mFirebaseDatabase;
@@ -49,7 +50,7 @@ public class PartyActivity extends MenuBarOptions {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private String mPartyID;
-
+    private String mUsername;
 
     @BindView(R.id.partyListView)
     ListView mSongListView;
@@ -75,7 +76,7 @@ public class PartyActivity extends MenuBarOptions {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
         createParty();
-
+        mUsername = ANONYMOUS;
 
 
         // Initialize song ListView and its adapter
@@ -140,11 +141,13 @@ public class PartyActivity extends MenuBarOptions {
     }
 
     private void onSignedOutCleanup() {
+        mUsername = ANONYMOUS;
         mSongAdapter.clear();
         detachDatabaseReadListener();
     }
 
     private void onSignedInInitialized(String displayName) {
+        mUsername = displayName;
         attachDatabaseReadListener();
     }
 
@@ -176,8 +179,6 @@ public class PartyActivity extends MenuBarOptions {
                     //songList.remove(song);
                     mSongAdapter.remove(song);
                     mSongAdapter.notifyDataSetChanged();
-
-
                 }
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -209,7 +210,6 @@ public class PartyActivity extends MenuBarOptions {
     }
 
     private void createParty(){
-        Party thisParty = new Party("songs", "members");
         mPartyID = mPartyDatabaseReference.push().getKey();
         mSongsDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("songs");
         mMembersDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("members");
