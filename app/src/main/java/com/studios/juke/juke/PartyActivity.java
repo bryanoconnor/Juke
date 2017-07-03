@@ -42,6 +42,7 @@ public class PartyActivity extends MenuBarOptions {
 
 
     // Firebase instance variables
+    private FirebaseUser mFirebaseUser;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mPartyDatabaseReference;
     private DatabaseReference mMembersDatabaseReference;
@@ -77,7 +78,7 @@ public class PartyActivity extends MenuBarOptions {
         mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
         createParty();
         mUsername = ANONYMOUS;
-
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         // Initialize song ListView and its adapter
         songList = new ArrayList<>();
@@ -213,5 +214,7 @@ public class PartyActivity extends MenuBarOptions {
         mPartyID = mPartyDatabaseReference.push().getKey();
         mSongsDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("songs");
         mMembersDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("members");
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mMembersDatabaseReference.child(mFirebaseUser.getUid().toString()).setValue("owner");
     }
 }
