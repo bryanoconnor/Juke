@@ -19,4 +19,6 @@
     <string name="sign_in">Sign In</string>
     <string name="open_spotify">Open Spotify</string>
     <string name="search_spotify">Search</string>
+    <string name="enter_party_code">Enter Party Code</string>
+    <string name="join_Button">Join</string>
 </resources>
