@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.studios.juke.juke">
+    package="com.studios.juke.juke">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,36 +12,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
+            android:value="@string/facebook_application_id" />
 
         <!-- Needed for LoginActivity to work -->
         <activity
             android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Needed to start Fragment activity from Activity intent -->
 
         <activity android:name=".UserAuth.AuthUiActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserAuth.SignedInActivity"/>
+        <activity android:name=".UserAuth.SignedInActivity" />
 
         <!-- Needed to start Fragment activity from Activity intent -->
 
-        <activity android:name=".SpotifyHomeActivity">
-        </activity>
-        <activity android:name=".CreateParty"/>
-        <activity android:name=".PartyActivity"/>
-        <activity android:name=".SearchActivity">
-        </activity>
+        <activity android:name=".SpotifyHomeActivity" />
+        <activity android:name=".CreateParty" />
+        <activity android:name=".PartyActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".JoinPartyActivity" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
