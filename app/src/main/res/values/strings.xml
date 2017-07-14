@@ -20,16 +20,7 @@
     <string name="open_spotify">Open Spotify</string>
     <string name="search_spotify">Search</string>
 
-    <string-array name="countries_array">
-        <item>Afghanistan</item>
-        <item>Albania</item>
-        <item>Algeria</item>
-        <item>American Samoa</item>
-        <item>Andorra</item>
-        <item>Angola</item>
-        <item>Anguilla</item>
-        <item>Antarctica</item>
-        ...
-    </string-array>
-
+    <string name="enter_party_code">Enter Party Code</string>
+    <string name="join_Button">Join</string>
 </resources>
+
