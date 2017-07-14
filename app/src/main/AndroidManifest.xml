@@ -36,11 +36,12 @@
 
         <!-- Needed to start Fragment activity from Activity intent -->
 
-        <activity android:name=".SpotifyHomeActivity"></activity>
+        <activity android:name=".SpotifyHomeActivity" />
         <activity android:name=".CreateParty" />
         <activity android:name=".PartyActivity" />
-        <activity android:name=".SearchActivity"></activity>
-        <activity android:name=".JoinPartyActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".JoinPartyActivity" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
