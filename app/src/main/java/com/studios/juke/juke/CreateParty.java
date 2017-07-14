@@ -1,9 +1,11 @@
 package com.studios.juke.juke;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
@@ -49,7 +51,7 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
         AuthenticationRequest request = builder.build();
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
 
-        generateQR();
+        //generateQR();
     }
 
     @Override
@@ -82,6 +84,9 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
                 });
             }
         }
+
+        Intent intent2 = new Intent(CreateParty.this, SpotifyHomeActivity.class);
+        startActivity(intent2);
     }
 
     @Override
@@ -136,10 +141,11 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
         Log.d("SpotifySearchActivity", "Received connection message: " + message);
     }
 
+
     private void generateQR(){
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            BitMatrix bitMatrix = writer.encode("Yo", BarcodeFormat.QR_CODE, 512, 512);
+            BitMatrix bitMatrix = writer.encode("9999", BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
