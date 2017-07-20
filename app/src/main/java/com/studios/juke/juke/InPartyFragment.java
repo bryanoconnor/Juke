@@ -17,6 +17,8 @@ import android.widget.ListView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,6 +27,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.app.Activity.RESULT_OK;
 
 public class InPartyFragment extends Fragment {
 
@@ -60,11 +64,11 @@ public class InPartyFragment extends Fragment {
     @BindView(R.id.partyEditText)
     EditText mSongEditText;
 
-    @Override
+    /*@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,13 +80,13 @@ public class InPartyFragment extends Fragment {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mPartyDatabaseReference = mFirebaseDatabase.getReference().child("parties");
- //       createParty();
+        createParty();
         mUsername = ANONYMOUS;
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         // Initialize song ListView and its adapter
         songList = new ArrayList<>();
-//        mSongAdapter = new SongAdapter(this, R.layout.list_item_song, songList);
+        mSongAdapter = new SongAdapter(getActivity(), R.layout.list_item_song, songList);
         mSongListView.setAdapter(mSongAdapter);
 
         // Enable Search button when there's text to search
@@ -113,11 +117,11 @@ public class InPartyFragment extends Fragment {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-//                    onSignedInInitialized(user.getDisplayName());
+                    onSignedInInitialized(user.getDisplayName());
                 } else {
-//                    onSignedOutCleanup();
- //                   startActivity(AuthUiActivity.createIntent(PartyActivity.this));
- //                   finish();
+                    onSignedOutCleanup();
+                    startActivity(AuthUiActivity.createIntent(PartyActivity.this));
+                    finish();
                     return;
                 }
             }
@@ -125,7 +129,7 @@ public class InPartyFragment extends Fragment {
 
         return view;
 
-    }/*
+    }
 
     @OnClick(R.id.partySearchButton)
     public void search(View view) {
@@ -183,6 +187,7 @@ public class InPartyFragment extends Fragment {
                     mSongAdapter.remove(song);
                     mSongAdapter.notifyDataSetChanged();
                 }
+
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
@@ -198,7 +203,7 @@ public class InPartyFragment extends Fragment {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if(mAuthStateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
@@ -207,7 +212,7 @@ public class InPartyFragment extends Fragment {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
@@ -218,5 +223,5 @@ public class InPartyFragment extends Fragment {
         mMembersDatabaseReference = mPartyDatabaseReference.child(mPartyID).child("members");
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mMembersDatabaseReference.child(mFirebaseUser.getUid().toString()).setValue("owner");
-    }*/
+    }
 }
