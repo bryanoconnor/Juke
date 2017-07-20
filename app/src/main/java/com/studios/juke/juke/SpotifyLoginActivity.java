@@ -68,7 +68,7 @@ public class SpotifyLoginActivity extends MenuBarOptions implements SpotifyPlaye
             }
         }
 
-        Intent intent2 = new Intent(SpotifyLoginActivity.this, SpotifyHomeActivity.class);
+        Intent intent2 = new Intent(SpotifyLoginActivity.this, HomeActivity.class);
         startActivity(intent2);
     }
 

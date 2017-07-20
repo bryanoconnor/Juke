@@ -166,5 +166,6 @@ public class ContactsActivity extends AppCompatActivity{
                     Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+        finish();
     }
 }

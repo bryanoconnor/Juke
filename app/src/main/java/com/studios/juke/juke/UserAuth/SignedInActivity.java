@@ -29,7 +29,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.studios.juke.juke.SpotifyLoginActivity;
+import com.studios.juke.juke.HomeActivity;
 import com.studios.juke.juke.R;
 
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class SignedInActivity extends AppCompatActivity {
 
     @OnClick(R.id.open_spotify)
     public void openSpotifyClicked() {
-        Intent i = new Intent(SignedInActivity.this, SpotifyLoginActivity.class);
+        Intent i = new Intent(SignedInActivity.this, HomeActivity.class);
         startActivity(i);
     }
 
