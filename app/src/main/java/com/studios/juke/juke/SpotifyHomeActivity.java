@@ -29,11 +29,20 @@ public class SpotifyHomeActivity extends MenuBarOptions{
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(SpotifyHomeActivity.this, CreateParty.class);
+                Intent intent = new Intent(SpotifyHomeActivity.this, ContactsActivity.class);
                 startActivity(intent);
             }
         });
 
         mJoinButton = (Button) findViewById(R.id.join_party);
+
+        mJoinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(SpotifyHomeActivity.this, JoinPartyActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

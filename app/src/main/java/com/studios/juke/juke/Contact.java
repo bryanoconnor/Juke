@@ -1,12 +1,15 @@
 package com.studios.juke.juke;
 
 
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class Contact implements Serializable, Comparable{
+import static android.R.transition.move;
+
+public class Contact implements Serializable, Comparable<Contact>{
 
     private String mContact;
     private String mNumber;
@@ -31,19 +34,19 @@ public class Contact implements Serializable, Comparable{
     }
 
     @Override
-    public int compareTo(@NonNull Object o) {
-        Contact contact = (Contact) o;
-        if(contact.getContact().equals(mContact))
-            return 0;
-        else
-            return -1;
+    public int compareTo(Contact othercontact) {
+        //compare name
+        int nameDiff = mContact.compareToIgnoreCase(othercontact.getContact());
+        if(nameDiff != 0){
+            return nameDiff;
+        }
+        //names are equals compare age
+        return -1;
     }
 
-    public boolean equals(Object obj){
-        Contact contact = (Contact) obj;
-        if(contact.getContact().equals(mContact))
-            return true;
-        else
-            return false;
+    @Override
+    public String toString() {
+        String result = mContact + '\n' + mNumber;
+        return result;
     }
 }

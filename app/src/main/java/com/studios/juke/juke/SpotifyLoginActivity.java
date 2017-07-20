@@ -1,19 +1,9 @@
 package com.studios.juke.juke;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ImageView;
-
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -24,7 +14,7 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
-public class CreateParty extends MenuBarOptions implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+public class SpotifyLoginActivity extends MenuBarOptions implements SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
 
     private Toolbar mToolbar;
 
@@ -38,10 +28,6 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_party);
-
-        mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mToolbar);
 
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
@@ -49,9 +35,6 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
         builder.setScopes(new String[]{"user-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
-
-        Intent intent = new Intent(CreateParty.this,ContactsActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -73,8 +56,8 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
                         SpotifyUtils.setPlayer(spotifyPlayer);
-                        SpotifyUtils.getPlayer().addConnectionStateCallback(CreateParty.this);
-                        SpotifyUtils.getPlayer().addNotificationCallback(CreateParty.this);
+                        SpotifyUtils.getPlayer().addConnectionStateCallback(SpotifyLoginActivity.this);
+                        SpotifyUtils.getPlayer().addNotificationCallback(SpotifyLoginActivity.this);
                     }
 
                     @Override
@@ -84,6 +67,9 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
                 });
             }
         }
+
+        Intent intent2 = new Intent(SpotifyLoginActivity.this, SpotifyHomeActivity.class);
+        startActivity(intent2);
     }
 
     @Override
@@ -137,24 +123,4 @@ public class CreateParty extends MenuBarOptions implements SpotifyPlayer.Notific
     public void onConnectionMessage(String message) {
         Log.d("SpotifySearchActivity", "Received connection message: " + message);
     }
-
-    /*
-    private void generateQR(){
-        QRCodeWriter writer = new QRCodeWriter();
-        try {
-            BitMatrix bitMatrix = writer.encode("Yo", BarcodeFormat.QR_CODE, 512, 512);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-                }
-            }
-            ((ImageView) findViewById(R.id.qr_image)).setImageBitmap(bmp);
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-    }*/
 }
