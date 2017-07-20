@@ -50,7 +50,7 @@
         </activity>
 
         <activity android:name=".SpotifyHomeActivity" />
-        <activity android:name=".CreateParty" />
+        <activity android:name=".SpotifyLoginActivity" />
         <activity android:name=".PartyActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".JoinPartyActivity" />
