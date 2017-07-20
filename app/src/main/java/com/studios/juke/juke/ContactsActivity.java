@@ -78,6 +78,7 @@ public class ContactsActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 sendCode();
+                finish();
             }
         });
     }
@@ -160,7 +161,7 @@ public class ContactsActivity extends AppCompatActivity{
             smsIntent.putExtra("sms_body", "this is a test");
             startActivity(smsIntent);
 
-        }catch (Exception e){
+        }catch (Exception e) {
             Toast.makeText(getApplicationContext(),
                     "SMS faild, please try again later!",
                     Toast.LENGTH_LONG).show();
